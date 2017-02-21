@@ -19,7 +19,16 @@ As a Focus Group Participant, ...
 * I want clear instructions on how to use the web app, and how my clicks are being interpreted
 * I want to see my results clearly displayed at the end of the survey
 
-# UI Flow
+## UI Flow
 1. Intro screen: Explain to user that they are timed, and what to expect with an example of the UI. Explain what input they are providing.
 2. Main app screen: Clear feedback as to which image is selected; user must hold down mouse button for a short time to prevent accidental misclicks. x/Samples counter displayed to provide feedback so user is not apprehensive of how many selections remain to be made. (optional) timer reinforces idea that user is being timed. Button which allows user to be given a new selection.
-3. Results screen shows the user the data they've provided it, with parts that are only of interest to marketing researchers excluded. User is thanked for their time, and given the option to receive email updates of any products their data was used to develop.
+3. Results screen shows the user the data they've provided it after 25 rounds, with parts that are only of interest to marketing researchers excluded. User is thanked for their time, and given the option to receive email updates of any products their data was used to develop.
+
+## Specific Problems
+* _How to prevent image redundancy?_
+ * **A:** Use if branches to determine collisions, or perhaps a second array of possibile drawings with that image removed.
+* _How to prevent image repetitiveness?_
+ * **A:** Store an array of previous results and compare against it.
+
+## Unsorted Ramblings
+* Consider creating an array of image objects, with properties that determine whether they are eligible to be drawn that round, basic metrics, and (stretch goal) associative data.
