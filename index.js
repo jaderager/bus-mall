@@ -1,45 +1,5 @@
 'use strict';
 
-/* GENERIC DOM MANIPULATION */
-function DOMNode() {
-
-  this.selfNodeRef;
-  this.childNodeRef;
-
-  this.attachToNode = function (become) {
-    this.selfNodeRef = become;
-  };
-
-  /*  Inserts node of element type nodeType as child of target. */
-  this.insertNode = function(nodeType) {
-    // console.log('FUNCTION_EXECUTE insertNode(' + target + ',' + nodeType + ')');
-    // console.log('insertNode() :: typeof target parameter is ' + typeof target);
-
-    var newNode;
-    newNode = document.createElement(nodeType);
-    this.selfNodeRef.appendChild(newNode);
-    // console.log('insertNode() :: RETURN lastChild ' + targetNodeObj.lastChild + 'of targetNode ' + targetNodeObj);
-    this.childNodeRef = this.selfNodeRef.lastChild;
-    console.log('DOMNode.insertNode() :: context of this: ' + this);
-  };
-
-  /*  As above, but creates a child text node.  */
-  this.insertNodeWithText = function(nodeType, textInput) {
-    // console.log('insertNodeWithText() :: FUNCTION_EXECUTE(' + target + ',' + nodeType + ',' + textInput + ')');
-    // console.log('insertNodeWithText() :: typeof target parameter is ' + typeof target);
-
-    var newNode;
-    var newTextNode;
-    newNode = document.createElement(nodeType);
-    newTextNode = document.createTextNode(textInput);
-    newNode.appendChild(newTextNode);
-    // console.log('insertNodeWithText() :: appending newNode ' + newNode + ' to targetNode ' + targetNodeObj);
-    this.selfNodeRef.appendChild(newNode);
-    // console.log('insertNodeWithText() :: RETURN lastChild (' + targetNodeObj.lastChild + ') of targetNode (' + targetNodeObj + ')');
-    this.childNodeRef = this.selfNodeRef.lastChild;
-  };
-}
-
 /* FOCUS GROUP APP */
 
 //first, let's create the image constructor...
@@ -59,9 +19,9 @@ var superImage = [
 
 
 
-function randomInclusive (min,max) {
-  var min = Math.ceil(min);
-  var max = Math.floor(max);
+function randomInclusive (minA,maxA) {
+  var min = Math.ceil(minA);
+  var max = Math.floor(maxA);
   return Math.floor(Math.random() * (max + 1 - min) + min);
 };
 
@@ -91,12 +51,9 @@ function ImageFrame(imgElements) {
     }
     for (i = 1; i < imgElements.length; i++) {
       console.log('.pickImages() :: ITERATE_2 i = ' + i);
-      
-      var collisions = true;
-      var infBreak = 0;
 
       while (superImage[this.newImgNo].isRedundant) {
-        console.log('.pickImages() :: Collision, ' + this.newImgNo + ':' + superImage[this.newImgNo].path + ' is redundant.')
+        console.log('.pickImages() :: Collision, ' + this.newImgNo + ':' + superImage[this.newImgNo].path + ' is redundant.');
         this.reroll();
       }
       this.addImage(i);
