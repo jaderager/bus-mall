@@ -39,7 +39,16 @@ body {
 .bodyText {
   font-family: Tahoma, Verdana, sans-serif;
   font-size: 24px;
-  white-space: pre-line;
+}
+
+#loadingText {
+  color: red;
+  font-size: 24px;
+}
+
+#readyText {
+  color: darkviolet;
+  font-size: 24px;
 }
 
 .middleAlign {
