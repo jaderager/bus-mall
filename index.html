@@ -9,13 +9,17 @@
 
 <body>
     <section id="appPane">
+        <!-- Intro UI State -->
         <p id="introText" class="bodyText middleAlign">Welcome to the BusMall Focus Group App! You will be given a selection of three images of different products in development, and you must choose the one that most appeals to you. You will be given 25 sets of images to choose from.<br>
         <br>
         <span id="loadingText">Loading...</span><span id="readyText" class="hidden">Ready. Click this text to continue.</span>
         </p>
+        <!-- Choosing UI State -->
         <img id="img1" class="hidden">
         <img id="img2" class="hidden">
         <img id="img3" class="hidden">
+        <!-- Results UI State -->
+        <canvas id="appResults" class="hidden"></canvas>
     </section>
 
     <div id="preload">
@@ -40,6 +44,7 @@
         <img src="./img/water-can.jpg">
         <img src="./img/wine-glass.jpg">
     </div>
+    <script src="./node_modules/chart.js/dist/Chart.js" type="application/javascript"></script>
     <script src="index.js" type="application/javascript"></script> <!--Focus Group App-->
 </body>
 </html>
