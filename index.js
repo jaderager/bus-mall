@@ -223,13 +223,8 @@ document.addEventListener('DOMContentLoaded', function loadWrapper() {
 
 });//DOMContentLoaded
 
-
-// var allLoaded = 0;
-// while (!(allLoaded === 1)) {
-//   if (introText) {
 introText = document.getElementById('introText');
 introText.addEventListener('click', function introClick() {
-      // console.log('introClick() :: FUNCTION_EXECUTE');
 
   if (windowLoaded && domLoaded) { //Initialize screen
 
@@ -239,14 +234,10 @@ introText.addEventListener('click', function introClick() {
     removeImgElAttrs('class', imageHand); //remove 'hidden' class
     uiState = 'choosing';
 
-        // allLoaded++;
+
   }
 });//introClick
-  // }//if
 
-
-
-  // if (appPane) {
 imageHand = new ImageHand();
 appPane = document.getElementById('appPane');
 appPane.addEventListener('click', function productClick() {
@@ -258,12 +249,6 @@ appPane.addEventListener('click', function productClick() {
     }
   }
 });
-  // } //if
-// }//while
-
-
-
-
 
 var loadingText;
 var readyText;
