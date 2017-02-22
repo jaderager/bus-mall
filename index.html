@@ -5,14 +5,14 @@
 <html>
 <head>
     <link href="index.css" rel="stylesheet" type="text/css">
-    <script src="index.js" type="application/javascript"></script> <!--Focus Group App-->
 </head>
 
 <body>
     <section id="appPane">
-        <p id="introText" class="bodyText middleAlign">Welcome to the BusMall Focus Group App! You will be given a selection of three images of different products in development, and you must choose the one that most appeals to you.
+        <p id="introText" class="bodyText middleAlign">Welcome to the BusMall Focus Group App! You will be given a selection of three images of different products in development, and you must choose the one that most appeals to you. You will be given 25 sets of images to choose from.<br>
+        <br>
+        <span id="loadingText">Loading...</span><span id="readyText" class="hidden">Ready. Click this text to continue.</span>
         </p>
-        <p id="loadingText" class="middleAlign">Loading...</p>
         <img id="img1" class="hidden">
         <img id="img2" class="hidden">
         <img id="img3" class="hidden">
@@ -40,5 +40,6 @@
         <img src="./img/water-can.jpg">
         <img src="./img/wine-glass.jpg">
     </div>
+    <script src="index.js" type="application/javascript"></script> <!--Focus Group App-->
 </body>
 </html>
