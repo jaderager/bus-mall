@@ -81,7 +81,6 @@ var ImageHand = function() {
 
   /* REPETITIVENESS */
   // Repetetiveness is whether a card has already been drawn the previous round
-
   this.setPrevHandRepetetiveness = function(bool) {
     for (var index = 0; index < this.currentHand.length; index++) {
       this.prevHandRefs[index].isRepetitive = bool; // signifies that these DeckItem's have been drawn this round, for use next round
@@ -121,7 +120,6 @@ var ImageHand = function() {
       /* -redundancy- / -repetetiveness- */
       for (index = 0; index === 0; index++) {// first round, first card; -redundancy- / -repetetiveness-
         console.log('.drawCards() :: first round, first card');
-        // console.log('.drawCards() :: ITERATE i = ' + i);
 
         // first round, first card; any will do.
         // ACCEPT card drawn at top of func def.
@@ -279,21 +277,6 @@ function setUiState(uiStateArg) {
     img1El.setAttribute('class', 'hidden');
     img2El.setAttribute('class', 'hidden');
     img3El.setAttribute('class', 'hidden');
-
-    /* fill up the barData object... */
-
-    var barData = new Object();
-    barData.type = 'bar',
-    barData.datasets = [
-      {
-        fillColor: '#FFFFFF',
-        strokeColor: '#FFFFFF',
-      },
-      {
-        fillColor: '#FF0000',
-        strokeColor: '#FF0000'
-      },
-    ];
 
     appResults.removeAttribute('class'); // remove hidden class, show app results
 
