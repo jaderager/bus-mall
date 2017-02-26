@@ -41,7 +41,7 @@ var img1El;
 var img2El;
 var img3El;
 var ImageHand = function() {
-  this.rngDeckItemIndex;
+  this.drawnDeckItemIndex;
 
   img1El = document.getElementById('img1');
   img2El = document.getElementById('img2');
@@ -50,12 +50,12 @@ var ImageHand = function() {
   this.currentHand = [new ImageCard(img1El), new ImageCard(img2El), new ImageCard(img3El)]; // attach img elements to hand
   console.log('printing .currentHand', this.currentHand);
 
-  this.prevHandRefs = [];
+  this.prevHandIndexes = [];
 
   this.finishedRounds = 0;
 
-  this.getRngDeckItem = function() { // returns the randomly picked DeckItem being dealt whilst iterating over hand in .drawCards();
-    return imageDeck[this.rngDeckItemIndex];
+  this.getDrawnDeckItem = function() { // returns the randomly picked DeckItem being dealt whilst iterating over hand in .drawCards();
+    return imageDeck[this.drawnDeckItemIndex];
   };
 
   this.getDealtCardEl = function(x) {
@@ -67,40 +67,47 @@ var ImageHand = function() {
   };
 
   this.reDrawCard = function() {
-    this.rngDeckItemIndex = randomInclusive(0, 19);
+    this.drawnDeckItemIndex = randomInclusive(0, 19);
   };
 
   /* REDUNDANCY */
   // Redundancy is whether a card has already been drawn this round, and would display twice concurrently
 
   this.setPrevHandRedundancy = function(bool) {
-    for (var index = 0; index < this.currentHand.length; index++) { // clear .isRedundant flag from current DeckItem's in hand.
-      this.prevHandRefs[index].isRedundant = bool;
+    for (var i = 0; i < this.currentHand.length; i++) { // clear .isRedundant flag from current DeckItem's in hand.
+      imageDeck[this.prevHandIndexes[i]].isRedundant = bool;
     }
   };
 
   /* REPETITIVENESS */
   // Repetetiveness is whether a card has already been drawn the previous round
   this.setPrevHandRepetetiveness = function(bool) {
-    for (var index = 0; index < this.currentHand.length; index++) {
-      this.prevHandRefs[index].isRepetitive = bool; // signifies that these DeckItem's have been drawn this round, for use next round
+    for (var i = 0; i < this.currentHand.length; i++) {
+      imageDeck[this.prevHandIndexes[i]].isRepetitive = bool; // signifies that these DeckItem's have been drawn this round, for use next round
     }
   };
 
   this.copyCurrentHandToPrevHand = function() {
-    this.prevHandRefs = []; // clear old entries, if any
-    for (var index = 0; index < this.currentHand.length; index++) {
-      this.prevHandRefs.push(this.currentHand[index].deckItemRef);
+    this.prevHandIndexes = []; // clear old entries, if any
+    for (var i = 0; i < this.currentHand.length; i++) {
+      this.prevHandIndexes.push(this.currentHand[i].deckItemRef.id);
     }
   };
 
   this.addDrawnCardToHand = function(index) {
-    this.currentHand[index].handElement.setAttribute('src', this.getRngDeckItem().path);
-    this.currentHand[index].deckItemRef = this.getRngDeckItem();
+    this.currentHand[index].handElement.setAttribute('src', this.getDrawnDeckItem().path);
+    this.currentHand[index].deckItemRef = this.getDrawnDeckItem();
 
-    this.getRngDeckItem().isRedundant = true;
-    this.getRngDeckItem().viewCount++;
-    console.log('.addDrawnCardToHand() :: Drew image ' + this.rngDeckItemIndex + '(' + this.getRngDeckItem().path + ') viewCount: ' + this.getRngDeckItem().viewCount);
+    this.getDrawnDeckItem().isRedundant = true;
+    this.getDrawnDeckItem().viewCount++;
+    console.log('.addDrawnCardToHand() :: Drew image ' + this.drawnDeckItemIndex + '(' + this.getDrawnDeckItem().path + ') viewCount: ' + this.getDrawnDeckItem().viewCount);
+  };
+
+  this.displayLoadedCards = function() {
+    for (var index = 0; index < this.currentHand.length; index++) {
+      this.currentHand[index].handElement.setAttribute('src', this.currentHand[index].deckItemRef.path);
+    };
+    savedHandQueued = false;
   };
 
   /* BEGIN ROUND */
@@ -131,8 +138,8 @@ var ImageHand = function() {
       for (index = 1; index < this.currentHand.length; index++) {
         console.log('.drawCards() :: first round, n+1 card');
 
-        while (this.getRngDeckItem().isRedundant && runaway < 20) { // CHECK REDUNDANCY
-          console.log('.drawCards() :: REDUNDANCY: ', this.rngDeckItemIndex, '(', this.getRngDeckItem().path, ')');
+        while (this.getDrawnDeckItem().isRedundant && runaway < 20) { // CHECK REDUNDANCY
+          console.log('.drawCards() :: REDUNDANCY: ', this.drawnDeckItemIndex, '(', this.getDrawnDeckItem().path, ')');
           this.reDrawCard(); // REJECT nth card
           runaway++;
         }
@@ -149,8 +156,8 @@ var ImageHand = function() {
       for (index = 0; index === 0; index++) { // CHECK REPETITIVENESS
         console.log('.drawCards() :: n+1 round, first card;');
 
-        while (this.getRngDeckItem().isRepetitive && runaway < 20) {
-          console.log('.drawCards() :: REPETITIVENESS: ', this.rngDeckItemIndex, '(', this.getRngDeckItem().path, ')');
+        while (this.getDrawnDeckItem().isRepetitive && runaway < 20) {
+          console.log('.drawCards() :: REPETITIVENESS: ', this.drawnDeckItemIndex, '(', this.getDrawnDeckItem().path, ')');
           this.reDrawCard();
           runaway++;
         }
@@ -163,16 +170,16 @@ var ImageHand = function() {
       for (index = 1; index < this.currentHand.length; index++) { // CHECK REDUNDANCY AND REPETITIVENESS
         console.log('.drawCards() :: n+1 round, n+1 card;');
 
-        while ((this.getRngDeckItem().isRedundant || this.getRngDeckItem().isRepetitive) && runaway < 20) {
+        while ((this.getDrawnDeckItem().isRedundant || this.getDrawnDeckItem().isRepetitive) && runaway < 20) {
 
           var debug;
-          if (this.getRngDeckItem().isRedundant) {
+          if (this.getDrawnDeckItem().isRedundant) {
             debug = 'REDUNDANCY: ';
-          } else if (this.getRngDeckItem().isRepetitive) {
+          } else if (this.getDrawnDeckItem().isRepetitive) {
             debug = 'REPETITIVENESS: ';
           }
 
-          console.log('.drawCards() :: ', debug, this.rngDeckItemIndex, '(', this.getRngDeckItem().path, ')');
+          console.log('.drawCards() :: ', debug, this.drawnDeckItemIndex, '(', this.getDrawnDeckItem().path, ')');
           this.reDrawCard(); // REJECT nth card
           runaway++;
         }
@@ -181,6 +188,7 @@ var ImageHand = function() {
 
       }
     }
+    saveState();
 
 
   };// .drawCards
@@ -208,7 +216,7 @@ var ImageHand = function() {
     this.finishedRounds++; // what was current will now be prev.
     console.log('.selectHandNo() :: .finishedRounds = ' + this.finishedRounds);
     for (var i = 0; i < this.currentHand.length; i++) {
-      console.log('END ROUND ', this.finishedRounds + 1, ' img', i, ': id=', this.currentHand[i].deckItemRef.id, ' .path=', this.currentHand[i].deckItemRef.path);
+      console.log('END ROUND ', this.finishedRounds, ' img', i, ': id=', this.currentHand[i].deckItemRef.id, ' .path=', this.currentHand[i].deckItemRef.path);
     }
 
   };
@@ -243,6 +251,8 @@ window.addEventListener('load', function windowLoadTrigger() {
   readyText.removeAttribute('class'); // remove hidden class, make visible
 });// all content loaded
 
+/* DEBUG MENU */
+/* DOESN'T EVEN WORK ALL THE TIME, WOW */
 document.addEventListener('keypress', function debugMenu(event) {
   console.log('keyCode:', event.key);
   if (event.key === 'D') {
@@ -254,24 +264,22 @@ document.addEventListener('keypress', function debugMenu(event) {
 var appResults = document.getElementById('appResults');
 var appResultsContext = appResults.getContext('2d');
 console.log('appResults:', appResults);
+
+/* SCREEN TRANSITIONS */
 function setUiState(uiStateArg) {
   console.log('setUiState() :: FUNCTION_EXECUTE');
   uiState = uiStateArg; //set the global
 
   if (uiState === 'choosing') {
-    for (var c = 0; c < imageHand.currentHand.length; c++) {
-      console.log('clicked target:', event.target);
-
-      if (event.target === imageHand.currentHand[c].handElement) { // event delegation checks all hand elements
-        console.log('supposed to match against:', imageHand.currentHand[c].handElement);
-        imageHand.selectHandNo(c); // select hand index, increment rounds and draw new cards
-
-        if (imageHand.finishedRounds < 25) {
-          imageHand.drawCards();
-        }
-      }
+    if (!(imageHand.currentHand)) {
+      imageHand.drawCards();
     }
-  } else if (uiState === 'results') {
+
+    introText.setAttribute('class', 'hidden');
+    removeImgElAttrs('class', imageHand); // remove 'hidden' class
+  }
+
+  if (uiState === 'results') {
     console.log('uiState=', uiState);
 
     img1El.setAttribute('class', 'hidden');
@@ -289,9 +297,6 @@ function setUiState(uiStateArg) {
       resultsChartViewCount.push(imageDeck[i].viewCount);
     }
 
-    console.log('resultsChartLabels is:', resultsChartLabels);
-
-    // var resultsChart =
     new Chart(appResultsContext, {
       type: 'bar',
       data: {
@@ -314,34 +319,119 @@ function setUiState(uiStateArg) {
         ], // datasets
       }, // data object
     });
+
+    localStorage['sessionState'] = 'reset';
   } // else if
 }//uiState()
 
+/* first time running? */
+var savedHandQueued;
+if (!localStorage['sessionState']) {
+  localStorage['sessionState'] = 'reset';
+  savedHandQueued = false; // used to avoid redrawing after loading a hand
+} else if (localStorage['sessionState'] === 'saved') {
+  savedHandQueued = true;
+}
+
+/* SAVE STATE TO LOCAL STORAGE */
+var saveState = function() {
+
+  localStorage['imageHand.finishedRounds'] = imageHand.finishedRounds;
+
+  for (var i = 0; i < 3; i++) {
+    localStorage['imageHand.prevHandIndexes.' + i] = imageHand.prevHandIndexes[i];
+  }
+
+  for (i = 0; i < 3; i++) {
+    localStorage['imageHand.currentHand.' + i + '.deckItemRef.id'] = imageHand.currentHand[i].deckItemRef.id;
+  }
+
+  //we need to save imageDeck properties...
+  for (i = 0; i < imageDeck.length; i++) {
+    localStorage['imageDeck.' + i + '.isRedundant'] = imageDeck[i].isRedundant;
+    localStorage['imageDeck.' + i + '.isRepetetive'] = imageDeck[i].isRepetitive;
+    localStorage['imageDeck.' + i + '.viewCount'] = imageDeck[i].viewCount;
+    localStorage['imageDeck.' + i + '.clickCount'] = imageDeck[i].clickCount;
+  }
+
+  //need to know what screen to resume from...
+  localStorage['uiState'] = uiState;
+
+  localStorage['sessionState'] = 'saved';
+};
+
+var loadState = function() {
+  console.log('***LOADING***');
+
+  imageHand.finishedRounds = localStorage['imageHand.finishedRounds'];
+
+  for (var i = 0; i < 3; i++) {
+    imageHand.prevHandIndexes[i] = localStorage['imageHand.prevHandIndexes.' + i];
+  }
+  for (i = 0; i < 3; i++) {
+    imageHand.currentHand[i].deckItemRef = imageDeck[ localStorage['imageHand.currentHand.' + i + '.deckItemRef.id'] ];
+  }
+
+  for (i = 0; i < imageDeck.length; i++) {
+    if (localStorage['imageDeck.' + i + '.isRedundant'] === 'true') {
+      imageDeck[i].isRedundant = true;
+    } else if (localStorage['imageDeck.' + i + '.isRedundant'] === 'false') {
+      imageDeck[i].isRedundant = false;
+    }
+
+    if (localStorage['imageDeck.' + i + '.isRepetetive'] === 'true') {
+      imageDeck[i].isRepetitive = true;
+    } else if (localStorage['imageDeck.' + i + '.isRepetetive'] === 'false') {
+      imageDeck[i].isRepetitive = false;
+    }
+
+    imageDeck[i].viewCount = parseInt(localStorage['imageDeck.' + i + '.viewCount']);
+    imageDeck[i].clickCount = parseInt(localStorage['imageDeck.' + i + '.clickCount']);
+  }
+
+  //sets the uiState global var and renders screen accordingly
+  setUiState(localStorage['uiState']);
+
+  localStorage['sessionState'] = 'loaded';
+};
 
 imageHand = new ImageHand();
 appPane = document.getElementById('appPane');
-
-
 introText = document.getElementById('introText');
 
+/* CLICK EVENT LISTENER */
 appPane.addEventListener('click', function appClickTrigger() {
 
   document.getSelection().removeAllRanges();
 
+  if (windowLoaded && domLoaded && uiState === 'loading' && localStorage['sessionState'] === 'saved') {
+    loadState();
+    setUiState(uiState); // not as redundant as it seems, this also re-arranges the display
+  }
+
   if (windowLoaded && domLoaded && uiState === 'loading') {
-
-    imageHand.drawCards();
-
-    introText.setAttribute('class', 'hidden');
-    removeImgElAttrs('class', imageHand); // remove 'hidden' class
-    uiState = 'choosing';
+    setUiState('choosing');
   }
 
   if (uiState === 'choosing') {
-    setUiState('choosing');
+    for (var c = 0; c < imageHand.currentHand.length; c++) {
+      console.log('clicked target:', event.target);
+
+      if (event.target === imageHand.currentHand[c].handElement) { // event delegation checks all hand elements
+        console.log('supposed to match against:', imageHand.currentHand[c].handElement);
+        imageHand.selectHandNo(c); // select hand index, increment rounds and draw new cards
+      }
+    }
+
+    if (imageHand.finishedRounds < 25 && !savedHandQueued) {
+      imageHand.drawCards();
+    } else if (imageHand.finishedRounds < 25 && savedHandQueued) {
+      imageHand.displayLoadedCards();
+    }
+
   }
 
   if (uiState === 'choosing' && imageHand.finishedRounds === 25) {
     setUiState('results');
-  }
+  };
 });
